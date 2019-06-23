@@ -2,7 +2,13 @@ import React from 'react'
 import {Form, Button, Card} from 'react-bootstrap'
 import Geocode from 'react-geocode'
 import {connect} from 'react-redux'
-import {addAddress, setCurrent, clearAddresses, setCentroid} from '../store'
+import {
+  addAddress,
+  setCurrent,
+  clearAddresses,
+  setCentroid,
+  getPlaces
+} from '../store'
 import {getCenter} from 'geolib'
 
 const AddressForm = props => {
@@ -18,20 +24,27 @@ const AddressForm = props => {
   const handleAdd = async address => {
     event.preventDefault()
     const geo = await Geocode.fromAddress(address)
-    props.addAddress(geo.results[0].geometry.location)
-    props.setCurrent(geo.results[0].geometry.location)
+    console.log(geo.results[0])
+
+    const toAdd = {
+      name: geo.results[0].formatted_address,
+      location: geo.results[0].geometry.location
+    }
+    props.addAddress(toAdd)
+    props.setCurrent(toAdd)
   }
   const handleSubmit = () => {
     event.preventDefault()
     const centroid = calculateCentroid()
     props.setCentroid(centroid)
+    props.getPlaces(centroid)
   }
   const calculateCentroid = () => {
     let geoArray = []
     for (let i of props.addresses) {
       let geoObj = {}
-      geoObj.latitude = i.lat
-      geoObj.longitude = i.lng
+      geoObj.latitude = i.location.lat
+      geoObj.longitude = i.location.lng
       geoArray.push(geoObj)
     }
     const geoFind = getCenter(geoArray)
@@ -104,6 +117,7 @@ const mapDispatchToProps = dispatch => ({
   addAddress: address => dispatch(addAddress(address)),
   setCurrent: address => dispatch(setCurrent(address)),
   clearAddresses: () => dispatch(clearAddresses()),
-  setCentroid: centroid => dispatch(setCentroid(centroid))
+  setCentroid: centroid => dispatch(setCentroid(centroid)),
+  getPlaces: centroid => dispatch(getPlaces(centroid))
 })
 export default connect(mapStateToProps, mapDispatchToProps)(AddressForm)

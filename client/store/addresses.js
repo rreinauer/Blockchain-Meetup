@@ -9,7 +9,10 @@ const SET_CENTROID = 'SET_CENTROID'
 
 const initialState = {
   addresses: [],
-  currentAddress: {lat: 40.683534, lng: -73.980314},
+  currentAddress: {
+    name: '340 Dean St',
+    location: {lat: 40.683534, lng: -73.980314}
+  },
   centroid: {}
 }
 export const addAddress = address => ({
