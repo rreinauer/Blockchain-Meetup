@@ -35,3 +35,8 @@ form div {
   justify-content: flex-end;
   align-items: 'center';
 }
+#contract-page {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
